@@ -1,0 +1,14 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="176px"
+    android:layout_height="156px"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="176px"
+        android:layout_height="156px"
+        android:backgroundTint=" #fcf2e6"
+        android:text="按鈕" />
+</LinearLayout>

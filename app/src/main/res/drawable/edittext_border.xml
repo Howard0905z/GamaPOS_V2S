@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#00FFFFFF"/> <!-- 透明的背景 -->
+    <stroke
+        android:width="2dp"
+        android:color="#ff6300" /> <!-- #ff6300 邊框顏色 -->
+    <corners android:radius="4dp"/> <!-- 邊框圓角，可根據需要調整 -->
+    <padding
+        android:left="10dp"
+        android:top="10dp"
+        android:right="10dp"
+        android:bottom="10dp" /> <!-- 內邊距，可根據需要調整 -->
+</shape>

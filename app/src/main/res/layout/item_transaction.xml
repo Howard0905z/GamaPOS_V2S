@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <TextView
+        android:id="@+id/textViewInvoiceNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="發票號碼" />
+
+    <TextView
+        android:id="@+id/textViewInvoiceAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="金額" />
+
+    <TextView
+        android:id="@+id/textViewTransactionDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="日期" />
+
+</LinearLayout>

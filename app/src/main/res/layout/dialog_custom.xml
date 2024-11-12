@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:gravity="center">
+
+    <!-- 商品名稱 -->
+    <TextView
+        android:id="@+id/tvButtonName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="商品名稱"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 庫存顯示 -->
+    <TextView
+        android:id="@+id/tvStock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="庫存：10"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        android:textColor="#FF0000" />
+
+    <!-- 數量輸入區域 -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/btnDecrease"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="-" />
+
+        <EditText
+            android:id="@+id/editTextQuantity"
+            android:layout_width="60dp"
+            android:layout_height="48dp"
+            android:inputType="number"
+            android:gravity="center"
+            android:text="1"
+            android:layout_marginHorizontal="8dp" />
+
+        <Button
+            android:id="@+id/btnIncrease"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="+" />
+    </LinearLayout>
+
+    <!-- 按鈕區域 -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/btnAddToCart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="加入購物車"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取消" />
+    </LinearLayout>
+
+    <!-- 加購項目區域 -->
+    <LinearLayout
+        android:id="@+id/addonsLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>

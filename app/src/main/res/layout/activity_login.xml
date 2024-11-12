@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- 帳號標題 -->
+
+    <!-- 帳號輸入框 -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:text="帳號"
+        android:textSize="38px"
+        android:layout_marginLeft="25px"
+        android:layout_marginBottom="16px"/>
+
+    <EditText
+        android:id="@+id/editTextUsername"
+        android:layout_width="598px"
+        android:layout_height="150px"
+        android:layout_marginBottom="60px"
+        android:background="@drawable/edittext_border"/>
+
+    <!-- 密碼標題 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="密碼"
+        android:layout_gravity="start"
+        android:textSize="38px"
+        android:layout_marginLeft="25px"
+        android:layout_marginBottom="16px"/>
+
+    <!-- 密碼輸入框 -->
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="598px"
+        android:layout_height="150px"
+        android:layout_marginBottom="160px"
+        android:inputType="textPassword"
+        android:background="@drawable/edittext_border"/>
+
+    <!-- 登入按鈕 -->
+    <Button
+        android:id="@+id/buttonLogin"
+        android:layout_width="621px"
+        android:layout_height="156px"
+        android:text="登入"
+        android:textColor=" #ffffff"
+        android:textSize="48px"
+        android:background="@drawable/button_rounded"/>
+</LinearLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 底層全透明遮罩，用以保持按鈕大小一致 -->
+    <item>
+        <shape>
+            <solid android:color="#FFFFFF" />
+        </shape>
+    </item>
+    <!-- 僅在右邊添加邊框 -->
+    <item
+        android:left="-2dp"
+        android:top="-2dp"
+        android:right="0dp"
+        android:bottom="-2dp">
+        <shape>
+            <solid android:color="#00000000" /> <!-- 背景透明 -->
+            <stroke
+                android:width="2dp"
+                android:color="#dbdbdb" /> <!-- 邊框顏色設定為黑色 -->
+        </shape>
+    </item>
+</layer-list>
