@@ -725,7 +725,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
             appRequest.setPayModeId(Constant.PAY_MODE_ID_CREDIT_CARD);
             appRequest.setItemList(itemList);
             appRequest.setInvoice(invoice);
-            appRequest.getCreditCardReceiptType();
+            appRequest.setCreditCardReceiptType("1");
 
             if (carrierCode != null && !carrierCode.isEmpty()) {
                 Toast.makeText(this, "發票模式: " + "載具", Toast.LENGTH_LONG).show();
@@ -790,7 +790,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
             appRequest.setPayModeId(Constant.PAY_MODE_ID_CREDIT_CARD);
             appRequest.setItemList(itemList);
             appRequest.setInvoice(invoice);
-            appRequest.getCreditCardReceiptType();
+            appRequest.setCreditCardReceiptType("1");
 
             if (carrierCode != null && !carrierCode.isEmpty()) {
                 Toast.makeText(this, "發票模式: " + "載具", Toast.LENGTH_LONG).show();
@@ -990,6 +990,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
             appRequest.setAmount(totalAmount);
             appRequest.setOrderId(currentOrderId); // 使用存储的订单编号
             appRequest.setPayModeId("37");
+            appRequest.setCreditCardReceiptType("1");
 
             if (itemList == null) {
                 itemList = new ArrayList<>();
@@ -1226,6 +1227,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
             jsonObject.put("userId", appRequest.getUserId());
             jsonObject.put("currency", appRequest.getCurrency());
             jsonObject.put("payModeId", appRequest.getPayModeId());
+            jsonObject.put("creditCardReceiptType", appRequest.getCreditCardReceiptType());
 
             Log.d("getAppRequestJsonString", "Order Details: " + jsonObject.toString());
 
@@ -1615,19 +1617,33 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 double taxAmount;
 
                 if (response.getTaxIdNumber() != null && !response.getTaxIdNumber().isEmpty()) {
-                    taxAmount = invoiceAmount * 0.05; // 假设税率为5%
+                    taxAmount = Math.round(invoiceAmount * 0.05); // 假设税率为5%
                     orderData.put("tax_id_number", response.getTaxIdNumber());
                 } else {
                     taxAmount = 0; // 没有发票信息时税额为0
                     orderData.put("tax_id_number", "");
                 }
 
+                // 根据发票类型设置 invoice_type 和相关字段
+                if (carrierCode != null && !carrierCode.trim().isEmpty()) {
+                    // 使用载具
+                    orderData.put("invoice_type", "carrier");
+                    orderData.put("carrier_number", carrierCode);
+                } else if (loveCode != null && !loveCode.trim().isEmpty()) {
+                    // 捐赠发票
+                    orderData.put("invoice_type", "donation");
+                    orderData.put("love_code", loveCode);
+                } else {
+                    // 默认实体发票
+                    orderData.put("invoice_type", "physical");
+                    orderData.put("carrier_number", "");
+                }
+
                 // 使用修正后的发票金额和税额
                 orderData.put("invoice_number", response.getWordTrack() + "-" + (response.getInvoiceNumber() != null ? response.getInvoiceNumber() : "N/A"));
                 orderData.put("invoice_amount", invoiceAmount);
                 orderData.put("tax_amount", taxAmount);
-                orderData.put("total_amount_excluding_tax", invoiceAmount - taxAmount);
-
+                orderData.put("total_amount_excluding_tax", Math.round(invoiceAmount - taxAmount));
                 orderData.put("transaction_date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
 
                 List<Item> mergedItems = mergeItems(itemList); // 合并相同商品
@@ -1691,33 +1707,48 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Log.e(TAG, "Order creation failed", e);
-                    runOnUiThread(() -> Toast.makeText(CheckoutActivity.this, "訂單創建失敗", Toast.LENGTH_LONG).show());
+                    String errorMessage = e.getMessage() != null ? e.getMessage() : "未知錯誤";
+                    runOnUiThread(() -> Toast.makeText(CheckoutActivity.this, "訂單創建失敗: " + errorMessage, Toast.LENGTH_LONG).show());
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
-                        Log.d(TAG, "Order created successfully: " + response.body().string());
+                        String successMessage = response.body() != null ? response.body().string() : "訂單創建成功，但無回應內容";
+                        Log.d(TAG, "Order created successfully: " + successMessage);
                         runOnUiThread(() -> {
                             Toast.makeText(CheckoutActivity.this, "訂單創建成功", Toast.LENGTH_LONG).show();
                             clearItemsAndReturnToHome();
                         });
                     } else {
+                        // 讀取錯誤資訊
+                        String errorBody;
+                        try {
+                            errorBody = response.body() != null ? response.body().string() : "無錯誤資訊";
+                        } catch (IOException e) {
+                            errorBody = "無法讀取錯誤回應";
+                        }
+
                         Log.e(TAG, "Order creation failed with code: " + response.code());
-                        Log.e(TAG, "Response body: " + response.body().string());
-                        runOnUiThread(() -> Toast.makeText(CheckoutActivity.this, "訂單創建失敗，錯誤代碼：" + response.code(), Toast.LENGTH_LONG).show());
+                        Log.e(TAG, "Response body: " + errorBody);
+
+                        String finalErrorBody = errorBody; // 需要final變量來在Lambda中使用
+                        runOnUiThread(() -> {
+                            Toast.makeText(
+                                    CheckoutActivity.this,
+                                    "訂單創建失敗\n錯誤代碼：" + response.code() + "\n詳細錯誤：" + finalErrorBody,
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        });
                     }
                 }
+
             });
         } catch (Exception e) {
             Log.e(TAG, "Exception in createOrder method", e);
             Toast.makeText(CheckoutActivity.this, "訂單創建過程中發生錯誤", Toast.LENGTH_LONG).show();
         }
     }
-
-
-
-
 
     private double calculateUnitPriceExcludingTax(double unitPrice) {
         // 實現計算不含稅單價的邏輯

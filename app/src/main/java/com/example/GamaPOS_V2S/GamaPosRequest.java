@@ -107,6 +107,9 @@ public class GamaPosRequest {
         this.invoiceStateVoid = invoiceStateVoid;
     }
 
+    public void setCreditCardReceiptType(String creditCardReceiptType) {this.creditCardReceiptType = creditCardReceiptType;
+    }
+
     public int getInvoiceState(){
         return invoiceStateVoid;
     }
@@ -114,6 +117,7 @@ public class GamaPosRequest {
     public void setDiscount(String discount){this.discount = discount;}
 
     public String getDiscount(){return discount;}
+
 }
 
 class Item {
