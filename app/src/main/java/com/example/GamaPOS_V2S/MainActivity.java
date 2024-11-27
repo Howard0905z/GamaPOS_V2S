@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "API響應: " + responseBody);
                 Log.d(TAG, "HTTP Status Code: " + response.code());
                 if (!response.isSuccessful()) {
+                    Log.e(TAG, "API Error - Status Code: " + response.code() + ", Response Body: " + responseBody);
                     runOnUiThread(() -> Toast.makeText(MainActivity.this, "API錯誤: " + responseBody, Toast.LENGTH_LONG).show());
                 } else {
                     try {
@@ -427,20 +428,24 @@ public class MainActivity extends AppCompatActivity {
             recyclerViewBottom.setAdapter(emptyAdapter);
         });
 
+        // 如果主類別包含產品，直接顯示主類別下的產品
+        if (!category.getProducts().isEmpty()) {
+            displayProductsForCategory(category.getCategory_id());
+        }
+
+        // 顯示子類別（如果存在）
         if (!category.getSub_categories().isEmpty()) {
             List<Object> subCategoryObjects = new ArrayList<>(category.getSub_categories());
             CategoryAdapter adapter = new CategoryAdapter(this, subCategoryObjects, subCategory -> onSubCategoryClicked((SubCategory) subCategory), false);
             recyclerViewBottom.setAdapter(adapter);
-        } else {
-            displayProductsForCategory(category.getCategory_id());
         }
     }
+
 
     private void onSubCategoryClicked(SubCategory subCategory) {
         displayProductsForCategory(subCategory.getCategory_id());
         fetchProducts(subCategory);
     }
-
 
     private void fetchProducts(SubCategory subCategory) {
         OkHttpClient client = new OkHttpClient();
@@ -478,8 +483,13 @@ public class MainActivity extends AppCompatActivity {
                                 if (subCategoryJson.getInt("category_id") == subCategory.getCategory_id()) {
                                     List<Product> products = new ArrayList<>();
                                     JSONArray productsArray = subCategoryJson.getJSONArray("products");
+
                                     for (int k = 0; k < productsArray.length(); k++) {
                                         JSONObject productJson = productsArray.getJSONObject(k);
+
+                                        // Null check for price and quantity
+                                        int price = productJson.isNull("price") ? 0 : productJson.getInt("price");
+                                        Integer quantity = productJson.isNull("quantity") ? null : productJson.getInt("quantity");
 
                                         // 解析 Addons
                                         JSONArray addonsArray = productJson.getJSONArray("addons");
@@ -500,8 +510,8 @@ public class MainActivity extends AppCompatActivity {
                                         Product product = new Product(
                                                 productJson.getInt("product_id"),
                                                 productJson.getString("name"),
-                                                productJson.getInt("price"),
-                                                productJson.getInt("quantity"),
+                                                price,
+                                                quantity,
                                                 addons
                                         );
                                         products.add(product);
@@ -559,12 +569,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
-
-
-
-
-
 
     private String getToken() {
         SharedPreferences sharedPreferences = getSharedPreferences("appPrefs", MODE_PRIVATE);

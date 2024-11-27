@@ -1,1 +1,20 @@
-/build
+/debug/app-debug.apk
+/debug/output-metadata.json
+
+.gradle/
+build/
+.idea/
+*.iml
+
+# Local configuration file
+local.properties
+
+# Android Studio captures
+captures/
+
+# External native build folders
+.externalNativeBuild/
+
+# Log files and temporary files
+*.log
+*.tmp

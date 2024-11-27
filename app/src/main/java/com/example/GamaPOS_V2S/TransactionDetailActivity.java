@@ -99,7 +99,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
 
             // 設定作廢所需的必要參數
             appRequest.getStoreUid(); // 需要設置特約商店商務代號
-            appRequest.setOrderId(record.getOrderId());
+            appRequest.setOrderId("A2024111916390002");
             appRequest.setAmount(record.getInvoiceAmount());
             appRequest.getUserId(); // 需要設置使用者ID
 
@@ -107,14 +107,19 @@ public class TransactionDetailActivity extends AppCompatActivity {
             appRequest.setKey(key);
             appRequest.setUid(uid);
             appRequest.setInvoiceState(Constant.INVOICE_STATE_VOID);  // 作廢或作廢重開
+            appRequest.setCreditCardReceiptType("1");
 
             // 再次打印 key 和 uid 以檢查其值
             Log.d(TAG, "Refund key: " + key);
             Log.d(TAG, "Refund uid: " + uid);
 
+            // 將 appRequest 轉為 JSON 並記錄在 Log 中
+            String requestJson = getAppRequestJsonString(appRequest);
+            Log.d(TAG, "Refund Request JSON: " + requestJson);
+
             ActionDetails actionDetails = new ActionDetails();
-            actionDetails.setAction(Constant.ACTION_REFUND);
-            actionDetails.setData(getAppRequestJsonString(appRequest));  // 取得app request的JSON string
+            actionDetails.setAction(Constant.ACTION_TAP_REFUND);
+            actionDetails.setData(requestJson);  // 取得 app request 的 JSON 字串
 
             Intent intent = new Intent();
             intent.putExtra(Constant.INTENT_EXTRA_KEY_REQUEST_ACTION_DETAILS, actionDetails);
@@ -177,6 +182,7 @@ public class TransactionDetailActivity extends AppCompatActivity {
             jsonObject.put("key", appRequest.getKey());
             jsonObject.put("uid", appRequest.getUid());
             jsonObject.put("invoiceState", appRequest.getInvoiceState());
+            jsonObject.put("creditCardReceiptType", appRequest.getCreditCardReceiptType());
             // Add other necessary fields if needed
         } catch (JSONException e) {
             e.printStackTrace();
