@@ -86,7 +86,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
     private String currentOrderId;
     private static String lastOrderTime = "";
 
-    private static String taxID = "91002219";
+    private static String taxID = "66294370";
 
     private String totalString;
     private int totalAmount;
@@ -111,6 +111,8 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
     private static final String KEY_ORDER_NUMBER = "OrderNumber";
 
     private CartAdapter cartAdapter; // 声明 CartAdapter
+
+    private String fetchedOrderNumber = null;
 
 
     @Override
@@ -276,10 +278,21 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
         buttonCash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //collectInvoiceData();
-                sendCashTransaction();
+                fetchOrderNumber(new FetchOrderNumberCallback() {
+                    @Override
+                    public void onSuccess(String orderNumber) {
+                        sendCashTransaction(); // 訂單編號成功獲取後執行結帳
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        Log.e(TAG, "Failed to fetch order number: " + errorMessage);
+                        Toast.makeText(CheckoutActivity.this, "無法取得訂單編號: " + errorMessage, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
+
 
         buttonGamaPay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -309,9 +322,18 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
         buttonCreditCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                collectInvoiceData();
-                //sendCreditCardTransaction();
-                sendCreditCardTapTransaction();
+                fetchOrderNumber(new FetchOrderNumberCallback() {
+                    @Override
+                    public void onSuccess(String orderNumber) {
+                        sendCreditCardTapTransaction(); // 訂單編號成功獲取後執行結帳
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        Log.e(TAG, "Failed to fetch order number: " + errorMessage);
+                        Toast.makeText(CheckoutActivity.this, "無法取得訂單編號: " + errorMessage, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
@@ -589,9 +611,10 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
             double totalAmount = Double.parseDouble(editTextTotal.getText().toString());
             String orderId = generateOrderId();
 
+
             GamaPosRequest appRequest = new GamaPosRequest();
             appRequest.setAmount(totalAmount);
-            appRequest.setOrderId(orderId);
+            appRequest.setOrderId(fetchedOrderNumber); // 使用存储的订单编号
             appRequest.setPayModeId(Constant.PAY_MODE_ID_LINE_PAY);
             appRequest.setItemList(itemList);
             appRequest.setInvoice(invoice);
@@ -657,7 +680,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
 
         GamaPosRequest appRequest = new GamaPosRequest();
         appRequest.setAmount(totalAmount);
-        appRequest.setOrderId(orderId);
+        appRequest.setOrderId(fetchedOrderNumber); // 使用存储的订单编号
         appRequest.setPayModeId(Constant.BUY_39_PAY_MODE_ID_OFFLINE_ALL);
         appRequest.setItemList(itemList);
         appRequest.setInvoice(invoice);
@@ -721,7 +744,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
 
             GamaPosRequest appRequest = new GamaPosRequest();
             appRequest.setAmount(totalAmount);
-            appRequest.setOrderId(orderId);
+            appRequest.setOrderId(fetchedOrderNumber); // 使用存储的订单编号
             appRequest.setPayModeId(Constant.PAY_MODE_ID_CREDIT_CARD);
             appRequest.setItemList(itemList);
             appRequest.setInvoice(invoice);
@@ -778,7 +801,6 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
         }
     }
 
-
     private void sendCreditCardTapTransaction() {
         try {// 信用卡Tap交易
             double totalAmount = Double.parseDouble(editTextTotal.getText().toString());
@@ -786,7 +808,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
 
             GamaPosRequest appRequest = new GamaPosRequest();
             appRequest.setAmount(totalAmount);
-            appRequest.setOrderId(orderId);
+            appRequest.setOrderId(fetchedOrderNumber); // 使用存储的订单编号
             appRequest.setPayModeId(Constant.PAY_MODE_ID_CREDIT_CARD);
             appRequest.setItemList(itemList);
             appRequest.setInvoice(invoice);
@@ -843,17 +865,22 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
         }
     }
 
-
-
-
     private void sendCashTransaction() {
         try {
             double totalAmount = Double.parseDouble(editTextTotal.getText().toString());
+            // 检查 fetchedOrderNumber 是否为空或未初始化
+            if (fetchedOrderNumber == null || fetchedOrderNumber.isEmpty()) {
+                Log.e(TAG, "Fetched Order Number is null or empty!");
+                Toast.makeText(this, "訂單編號無效，請檢查", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Log.d(TAG, "Fetched Order Number: " + fetchedOrderNumber); // 输出 fetchedOrderNumber 的值
             currentOrderId = generateOrderId(); // 存储生成的订单编号
 
             GamaPosRequest appRequest = new GamaPosRequest();
             appRequest.setAmount(totalAmount);
-            appRequest.setOrderId(currentOrderId); // 使用存储的订单编号
+            appRequest.setOrderId(fetchedOrderNumber); // 使用存储的订单编号
             appRequest.setPayModeId("37");
 
             if (itemList == null) {
@@ -921,7 +948,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
 
             GamaPosRequest appRequest = new GamaPosRequest();
             appRequest.setAmount(totalAmount);
-            appRequest.setOrderId(currentOrderId); // 使用存储的订单编号
+            appRequest.setOrderId(fetchedOrderNumber); // 使用存储的订单编号
             appRequest.setPayModeId("37");
 
             if (itemList == null) {
@@ -988,7 +1015,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
 
             GamaPosRequest appRequest = new GamaPosRequest();
             appRequest.setAmount(totalAmount);
-            appRequest.setOrderId(currentOrderId); // 使用存储的订单编号
+            appRequest.setOrderId(fetchedOrderNumber); // 使用存储的订单编号
             appRequest.setPayModeId("37");
             appRequest.setCreditCardReceiptType("1");
 
@@ -1056,7 +1083,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
 
             GamaPosRequest appRequest = new GamaPosRequest();
             appRequest.setAmount(totalAmount);
-            appRequest.setOrderId(currentOrderId); // 使用存储的订单编号
+            appRequest.setOrderId(fetchedOrderNumber); // 使用存储的订单编号
             appRequest.setPayModeId("37");
 
             if (itemList == null) {
@@ -1149,11 +1176,6 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
         finish();
     }
 
-
-
-
-
-
     private void refreshCartItems() {
         SharedPreferences sharedPreferences = getSharedPreferences("appPrefs", MODE_PRIVATE);
         String cartItemsJson = sharedPreferences.getString("cartItems", "[]");
@@ -1188,9 +1210,6 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
             Log.d("CartActivity", "No cart items found in preferences, initializing empty cart");
         }
     }
-
-
-
 
     private ActionDetails getTransactionActionDetails(GamaPosRequest appRequest) {
         ActionDetails actionDetails = new ActionDetails();
@@ -1279,7 +1298,6 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
         Log.d("getAppRequestJsonString", "Final JSON: " + jsonString);
         return jsonString;
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1378,7 +1396,6 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
         return response;
     }
 
-
     private void handleLinePayResponse(GamaPosResponse response) {
         if (response != null) {
             String status = response.getStatus();
@@ -1391,6 +1408,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 // 假設您在某個按鈕點擊事件中調用 createOrder
                 double discountAmount = getIntent().getDoubleExtra("discountAmount", 0);
                 double rebateAmount = getIntent().getDoubleExtra("rebateAmount", 0);
+                
                 createOrder(response, "LINEPAY");
 
                 clearItemsAndReturnToHome();
@@ -1412,6 +1430,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 // 假設您在某個按鈕點擊事件中調用 createOrder
                 double discountAmount = getIntent().getDoubleExtra("discountAmount", 0);
                 double rebateAmount = getIntent().getDoubleExtra("rebateAmount", 0);
+                
                 createOrder(response, "LINEPAY");
 
                 clearItemsAndReturnToHome();
@@ -1434,6 +1453,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 // 假設您在某個按鈕點擊事件中調用 createOrder
                 double discountAmount = getIntent().getDoubleExtra("discountAmount", 0);
                 double rebateAmount = getIntent().getDoubleExtra("rebateAmount", 0);
+                
                 createOrder(response, "CREDIT_CARD");
                 Log.d(TAG, "调用 clearItemsAndReturnToHome 方法"); // 添加日誌記錄
                 clearItemsAndReturnToHome(); // 確保在支付成功後清空購物車
@@ -1441,7 +1461,6 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
             }
         }
     }
-
 
     private void handleCashResponse(GamaPosResponse response) {
         if (response != null) {
@@ -1456,6 +1475,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 // 假設您在某個按鈕點擊事件中調用 createOrder
                 double discountAmount = getIntent().getDoubleExtra("discountAmount", 0);
                 double rebateAmount = getIntent().getDoubleExtra("rebateAmount", 0);
+                
                 createOrder(response, "CASH");
 
                 Log.d(TAG, "調用 clearItemsAndReturnToHome 方法");
@@ -1478,6 +1498,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 // 假設您在某個按鈕點擊事件中調用 createOrder
                 double discountAmount = getIntent().getDoubleExtra("discountAmount", 0);
                 double rebateAmount = getIntent().getDoubleExtra("rebateAmount", 0);
+                
                 createOrder(response, "GAMA_PAY");
 
                 clearItemsAndReturnToHome();
@@ -1500,6 +1521,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 // 假設您在某個按鈕點擊事件中調用 createOrder
                 double discountAmount = getIntent().getDoubleExtra("discountAmount", 0);
                 double rebateAmount = getIntent().getDoubleExtra("rebateAmount", 0);
+                
                 createOrder(response, "SHOPPING_MALL_CREDIT_CARD");
                 clearItemsAndReturnToHome();
                 saveCartItemsToPreferences();
@@ -1521,6 +1543,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 // 假設您在某個按鈕點擊事件中調用 createOrder
                 double discountAmount = getIntent().getDoubleExtra("discountAmount", 0);
                 double rebateAmount = getIntent().getDoubleExtra("rebateAmount", 0);
+                
                 createOrder(response, "CULTURE_COIN");
                 clearItemsAndReturnToHome();
                 saveCartItemsToPreferences();
@@ -1528,7 +1551,6 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
             }
         }
     }
-
 
     private void handleScanResponse(GamaPosResponse response) {
         if (response != null) {
@@ -1561,7 +1583,6 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
             cartAdapter.notifyDataSetChanged();  // 通知适配器数据更新
         }
     }
-
     private List<Item> mergeItems(List<Item> items) {
         List<Item> mergedItems = new ArrayList<>();
         for (Item item : items) {
@@ -1590,6 +1611,65 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 .build();
     }
 
+    private void fetchOrderNumber(FetchOrderNumberCallback callback) {
+        OkHttpClient client = getHttpClient();
+        SharedPreferences sharedPreferences = getSharedPreferences("appPrefs", MODE_PRIVATE);
+        String token = sharedPreferences.getString("jwt_token", "");
+
+        RequestBody body = RequestBody.create("", null);
+        Request request = new Request.Builder()
+                .url("http://172.207.27.24:8100/orders/number")
+                .post(body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "Failed to fetch order number", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(CheckoutActivity.this, "無法取得訂單編號: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    callback.onFailure(e.getMessage());
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        String responseData = response.body() != null ? response.body().string() : "{}";
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        JSONObject dataObject = jsonObject.optJSONObject("data");
+                        if (dataObject != null) {
+                            fetchedOrderNumber = dataObject.optString("order_number", null);
+                            runOnUiThread(() -> {
+                                Toast.makeText(CheckoutActivity.this, "訂單編號取得成功: " + fetchedOrderNumber, Toast.LENGTH_LONG).show();
+                                callback.onSuccess(fetchedOrderNumber);
+                            });
+                            Log.d(TAG, "Fetched Order Number: " + fetchedOrderNumber);
+                        } else {
+                            runOnUiThread(() -> {
+                                Toast.makeText(CheckoutActivity.this, "訂單編號取得失敗", Toast.LENGTH_LONG).show();
+                                callback.onFailure("訂單編號取得失敗");
+                            });
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error parsing order number response", e);
+                        runOnUiThread(() -> callback.onFailure("解析訂單編號失敗"));
+                    }
+                } else {
+                    Log.e(TAG, "Failed to fetch order number, Response code: " + response.code());
+                    runOnUiThread(() -> callback.onFailure("無法取得訂單編號，響應碼：" + response.code()));
+                }
+            }
+        });
+    }
+
+    // 定義回呼介面
+    interface FetchOrderNumberCallback {
+        void onSuccess(String orderNumber);
+        void onFailure(String errorMessage);
+    }
 
     private void createOrder(GamaPosResponse response, String paymentType) {
         try {
@@ -1609,6 +1689,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 orderData.put("payment_type", paymentType);
                 orderData.put("key", response.getKey());
                 orderData.put("uid", response.getUid());
+                orderData.put("order_number", fetchedOrderNumber);
 
                 // 如果发票金额为空，使用结账金额
                 double invoiceAmount = response.getInvoiceAmount() != null && response.getInvoiceAmount() > 0
@@ -1760,14 +1841,6 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
         // 實現計算單個商品稅額的邏輯
         double taxRate = 0.05; // 假設稅率為5%
         return unitPrice - calculateUnitPriceExcludingTax(unitPrice);
-    }
-
-
-
-
-    private String getCurrentDateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        return sdf.format(new Date());
     }
 
     private void scanCode() {  // 掃碼回傳

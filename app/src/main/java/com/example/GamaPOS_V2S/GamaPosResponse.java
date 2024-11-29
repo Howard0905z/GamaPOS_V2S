@@ -1,5 +1,7 @@
 package com.example.GamaPOS_V2S;
 
+import android.util.Log;
+
 public class GamaPosResponse {
     private String status;
     private String message;
@@ -62,7 +64,11 @@ public class GamaPosResponse {
     }
 
     public void setInvoiceAmount(Double invoiceAmount) {
-        this.invoiceAmount = invoiceAmount;
+        if (invoiceAmount != null) {
+            this.invoiceAmount = invoiceAmount;
+        } else {
+            this.invoiceAmount = 0.0; // 或者其他適當的預設值
+        }
     }
 
     public String getInvoiceNumber() {

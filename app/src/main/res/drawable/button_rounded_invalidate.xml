@@ -1,0 +1,12 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="16dp" /> <!-- 控制四個角的圓角大小 -->
+    <solid android:color="#FF4444" /> <!-- 按鈕背景色，例如紅色 -->
+    <padding
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp" />
+    <stroke
+        android:width="2dp"
+        android:color="#FF4444" /> <!-- 按鈕邊框色 -->
+</shape>

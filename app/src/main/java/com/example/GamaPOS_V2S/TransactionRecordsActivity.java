@@ -145,7 +145,8 @@ public class TransactionRecordsActivity extends AppCompatActivity implements Ser
                                     transactionJson.optString("invalidated_user", "N/A"),
                                     products,
                                     key,
-                                    uid
+                                    uid,
+                                    transactionJson.optString("order_number", "N/A")
                             );
                             transactionList.add(transaction);
                         }
