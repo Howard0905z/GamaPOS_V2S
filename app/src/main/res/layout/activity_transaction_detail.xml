@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- activity_transaction_detail.xml -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,25 +7,184 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/detailLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:gravity="center"
             android:padding="16dp">
 
-            <!-- Existing details layout -->
-
+            <!-- 作廢圖片按鈕 -->
             <Button
-                android:id="@+id/buttonRefund"
-                android:layout_width="wrap_content"
+                android:id="@+id/buttonInvalidate"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="作廢訂單" />
+                android:background="@drawable/button_rounded_invalidate"
+                android:text="作廢"
+                android:textColor="#FFFFFF"
+                android:padding="12dp"
+                android:layout_gravity="center"
+                android:textSize="24sp" />
+
+
         </LinearLayout>
 
-    </LinearLayout>
+        <TextView
+            android:text="訂單資訊"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:paddingTop="16dp"
+            android:textStyle="bold" />
 
+        <!-- 訂單資訊 -->
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1"
+            android:background="#F5F5F5"
+            android:layout_marginTop="16dp">
+
+            <TableRow>
+                <TextView
+                    android:text="訂單時間"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/orderTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:text="訂單編號"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/orderNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:text="訂單狀態"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/orderStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+            </TableRow>
+
+            <TextView
+                android:text="交易紀錄"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:paddingTop="16dp"
+                android:textStyle="bold" />
+
+            <TableRow>
+                <TextView
+                    android:text="發票號碼"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/orderInvoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:text="統一編號"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/orderTaxId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+            </TableRow>
+
+
+            <!-- 可繼續新增更多行 -->
+
+        </TableLayout>
+
+        <!-- 商品資訊 -->
+        <TextView
+            android:text="商品資訊"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:paddingTop="16dp"
+            android:textStyle="bold" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1"
+            android:layout_marginTop="8dp">
+
+            <TableLayout
+                android:id="@+id/productTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1"
+                android:layout_marginTop="8dp">
+            </TableLayout>
+
+
+            <TableRow>
+                <TextView
+                    android:text="結帳金額"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/orderAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:text="付款方式"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/orderPayment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+            </TableRow>
+
+            <!-- 可繼續新增更多商品行 -->
+
+        </TableLayout>
+
+    </LinearLayout>
 </ScrollView>

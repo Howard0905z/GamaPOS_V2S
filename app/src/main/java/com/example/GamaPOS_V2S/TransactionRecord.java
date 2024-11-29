@@ -18,10 +18,11 @@ public class TransactionRecord implements Serializable {
     private List<Product> products;
     private String key; // 添加 key 字段
     private String uid; // 添加 uid 字段
+    private String orderNumber; // 添加 orderNumber 字段
 
     public TransactionRecord(String orderId, String invoiceStatus, String paymentType, String invoiceNumber, double invoiceAmount,
                              double totalAmountExcludingTax, double taxAmount, String taxIdNumber, String transactionDate,
-                             String creator, String invalidatedUser, List<Product> products, String key, String uid) {
+                             String creator, String invalidatedUser, List<Product> products, String key, String uid, String orderNumber) {
         this.orderId = orderId;
         this.invoiceStatus = invoiceStatus;
         this.paymentType = paymentType;
@@ -36,10 +37,15 @@ public class TransactionRecord implements Serializable {
         this.products = products;
         this.key = key; // 初始化 key 字段
         this.uid = uid; // 初始化 uid 字段
+        this.orderNumber = orderNumber; // 初始化 orderNumber 字段
     }
 
     public String getOrderId() {
         return orderId;
+    }
+
+    public String getOrderNumber(){
+        return orderNumber;
     }
 
     public String getInvoiceStatus() {
@@ -93,4 +99,5 @@ public class TransactionRecord implements Serializable {
     public String getUid() {
         return uid; // 添加 getter 方法
     }
+
 }
