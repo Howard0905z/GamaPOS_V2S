@@ -60,8 +60,8 @@ import tw.com.mypay.common.Constant;
 
 public class CheckoutActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private static final String PACKAGE_NAME = "tw.com.mypay.tap.dev"; //測試
-    //private static final String PACKAGE_NAME = "tw.com.mypay.tap"; //正式
+    //private static final String PACKAGE_NAME = "tw.com.mypay.tap.dev"; //測試
+    private static final String PACKAGE_NAME = "tw.com.mypay.tap"; //正式
     private static final String TARGET_ACTIVITY_NAME = "tw.com.mypay.MainActivity";
 
     private static final int LINE_PAY_REQUEST_CODE = 1;

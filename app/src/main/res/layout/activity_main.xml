@@ -40,7 +40,8 @@
             android:layout_weight="1"
             android:background="@drawable/button_background"
             android:text="直接結帳"
-            android:textSize="28px" />
+            android:textSize="28px"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/button_logout"
