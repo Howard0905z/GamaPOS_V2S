@@ -1,48 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:background="#F9F4EF">
 
-    <LinearLayout
+    <!-- 標題欄位 -->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:padding="16dp">
 
-        <!-- 新增兩個按鈕 -->
-        <Button
-            android:id="@+id/buttonQueryOrders"
+        <!-- 返回按鈕 -->
+        <ImageButton
+            android:id="@+id/buttonBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="查詢訂單" />
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true" />
 
-        <Button
-            android:id="@+id/buttonQueryRevenue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="查詢營收" />
-
+        <!-- 標題文字 -->
         <TextView
-            android:id="@+id/textViewSelectedDate"
+            android:id="@+id/textViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="未選擇日期" />
+            android:text="紀錄"
+            android:textSize="40px"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 
-        <TextView
-            android:id="@+id/textViewRevenueInfo"
+
+    <!-- ScrollView 包裹主內容 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="營收資訊將顯示在這裡"
-            android:visibility="gone" />
+            android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewTransactions"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="16dp" />
+            <!-- 前往交易紀錄按鈕 -->
+            <Button
+                android:id="@+id/buttonQueryOrders"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_rounded_record"
+                android:text="查詢訂單"
+                android:textColor="#FFFFFF"
+                android:textSize="48px"
+                android:textStyle="bold" />
 
-    </LinearLayout>
-</ScrollView>
+            <!-- 前往發票紀錄按鈕 -->
+            <Button
+                android:id="@+id/buttonQueryRevenue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_rounded_record"
+                android:text="查詢營收"
+                android:textColor="#FFFFFF"
+                android:textSize="48px"
+                android:textStyle="bold" />
+
+            <!-- 顯示已選日期 -->
+            <TextView
+                android:id="@+id/textViewSelectedDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="未選擇日期" />
+
+            <!-- 營收資訊顯示區 -->
+            <TextView
+                android:id="@+id/textViewRevenueInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="營收資訊將顯示在這裡"
+                android:visibility="gone" />
+
+            <!-- 交易紀錄 RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewTransactions"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="16dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

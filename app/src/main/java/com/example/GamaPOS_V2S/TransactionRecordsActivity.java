@@ -55,6 +55,8 @@ public class TransactionRecordsActivity extends AppCompatActivity implements Ser
         textViewRevenueInfo = findViewById(R.id.textViewRevenueInfo);
         recyclerViewTransactions = findViewById(R.id.recyclerViewTransactions);
 
+        findViewById(R.id.buttonBack).setOnClickListener(v -> finish());
+
         transactionsAdapter = new TransactionsAdapter(transactionList, this::showRecordDetails);
         recyclerViewTransactions.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTransactions.setAdapter(transactionsAdapter);

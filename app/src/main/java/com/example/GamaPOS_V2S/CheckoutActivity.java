@@ -293,12 +293,21 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
             }
         });
 
-
         buttonGamaPay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                collectInvoiceData();
-                sendGamaPayTransaction();
+                fetchOrderNumber(new FetchOrderNumberCallback() {
+                    @Override
+                    public void onSuccess(String orderNumber) {
+                        sendGamaPayTransaction(); // 訂單編號成功獲取後執行結帳
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        Log.e(TAG, "Failed to fetch order number: " + errorMessage);
+                        Toast.makeText(CheckoutActivity.this, "無法取得訂單編號: " + errorMessage, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
@@ -313,9 +322,18 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
         buttonLinePay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                collectInvoiceData();
-                //sendScanQrCodeTransaction();
-                sendOfflineTransaction();
+                fetchOrderNumber(new FetchOrderNumberCallback() {
+                    @Override
+                    public void onSuccess(String orderNumber) {
+                        sendOfflineTransaction(); // 訂單編號成功獲取後執行結帳
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        Log.e(TAG, "Failed to fetch order number: " + errorMessage);
+                        Toast.makeText(CheckoutActivity.this, "無法取得訂單編號: " + errorMessage, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
@@ -944,8 +962,13 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
     private void sendGamaPayTransaction() {
         try {
             double totalAmount = Double.parseDouble(editTextTotal.getText().toString());
-            currentOrderId = generateOrderId(); // 存储生成的订单编号
+            if (fetchedOrderNumber == null || fetchedOrderNumber.isEmpty()) {
+                Log.e(TAG, "Fetched Order Number is null or empty!");
+                Toast.makeText(this, "訂單編號無效，請檢查", Toast.LENGTH_LONG).show();
+                return;
+            }
 
+            Log.d(TAG, "Fetched Order Number: " + fetchedOrderNumber); // 输出 fetchedOrderNumber 的值
             GamaPosRequest appRequest = new GamaPosRequest();
             appRequest.setAmount(totalAmount);
             appRequest.setOrderId(fetchedOrderNumber); // 使用存储的订单编号
@@ -1386,6 +1409,7 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 response.setInvoiceNumber(invoiceJson.optString("number"));
                 response.setWordTrack(invoiceJson.optString("wordTrack"));
                 response.setTaxIdNumber(invoiceJson.optString("taxId"));
+                response.setB2bId(invoiceJson.optString("b2bId"));
             }
 
             Log.d(TAG, "Parsed response: " + jsonObject.toString());
@@ -1697,9 +1721,9 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                         : totalAmountFromCart;
                 double taxAmount;
 
-                if (response.getTaxIdNumber() != null && !response.getTaxIdNumber().isEmpty()) {
+                if (response.getB2bId() != null && !response.getB2bId().isEmpty()) {
                     taxAmount = Math.round(invoiceAmount * 0.05); // 假设税率为5%
-                    orderData.put("tax_id_number", response.getTaxIdNumber());
+                    orderData.put("tax_id_number", response.getB2bId());
                 } else {
                     taxAmount = 0; // 没有发票信息时税额为0
                     orderData.put("tax_id_number", "");

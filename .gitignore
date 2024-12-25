@@ -3,4 +3,5 @@
 *.lock
 *.bin
 *.probe
+.app/
 

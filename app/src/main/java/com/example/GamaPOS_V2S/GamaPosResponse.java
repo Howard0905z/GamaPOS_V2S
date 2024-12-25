@@ -20,6 +20,7 @@ public class GamaPosResponse {
     private String uid;
 
     private String key;
+    private String b2bId;
 
     // Getter and Setter methods
     public String getStatus() {
@@ -100,6 +101,11 @@ public class GamaPosResponse {
         this.key = key;
     }
     public String getKey(){return key;}
+
+    public void setB2bId(String b2bId) {
+        this.b2bId = b2bId;
+    }
+    public String getB2bId(){return b2bId;}
 
 
 }

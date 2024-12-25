@@ -10,7 +10,7 @@ public class GamaPosRequest {
     private String printMode;
     private String userId = "2";
     //private String storeUid = "910022190001"; //商務代號
-    private String storeUid = "662943700001"; //商務代號
+    private String storeUid = "895500290001"; //商務代號
     private String currency = "TWD";
     private List<Item> itemList;  // 添加 itemList
     private Invoice invoice;
