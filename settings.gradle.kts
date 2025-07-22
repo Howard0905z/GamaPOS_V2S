@@ -16,5 +16,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "GamaPOS_V2S"
+rootProject.name = "EcoPOS_V2S"
 include(":app")

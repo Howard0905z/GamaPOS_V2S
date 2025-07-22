@@ -125,6 +125,43 @@
                     android:padding="8dp" />
             </TableRow>
 
+            <TableRow
+                android:id="@+id/rowCancelledBy"
+                android:visibility="gone">
+
+                <TextView
+                    android:text="作廢人員"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvCancelledBy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/rowCancelReason"
+                android:visibility="gone">
+
+                <TextView
+                    android:text="作廢原因"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvCancelReason"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+            </TableRow>
+
+
 
             <!-- 可繼續新增更多行 -->
 

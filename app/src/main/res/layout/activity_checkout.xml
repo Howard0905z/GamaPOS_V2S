@@ -63,7 +63,112 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:background="#FFFFFF" />
+
         </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/textViewEmployeeNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="員工編號"
+            android:textSize="32px" />
+
+        <EditText
+            android:id="@+id/editEmployeeNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="none"
+            android:textSize="48px"
+            android:text="1"
+            android:cursorVisible="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:background="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- 發票備註 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/textViewInvoiceRemarks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="發票備註"
+            android:textSize="32px" />
+
+        <EditText
+            android:id="@+id/editInvoiceRemarks"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:textSize="32px"
+            android:hint="輸入發票備註"
+            android:cursorVisible="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- 經銷商編號 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/textViewDealerCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="經銷商編號"
+            android:textSize="32px" />
+
+        <EditText
+            android:id="@+id/editDealerCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:textSize="32px"
+            android:hint="輸入經銷商編號"
+            android:cursorVisible="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- 收據選項 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <CheckBox
+            android:id="@+id/checkBoxPrintReceipt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="列印合約"
+            android:textSize="32px"
+            android:textColor="#000000"
+            android:checked="false" />
+
+    </LinearLayout>
 
         <!-- 找零 -->
         <TextView
@@ -405,7 +510,7 @@
             android:layout_marginBottom="16px">
 
             <Button
-                android:id="@+id/buttonGamaPay"
+                android:id="@+id/buttonEcoPay"
                 android:layout_width="0dp"
                 android:layout_height="154px"
                 android:layout_weight="1"
@@ -442,6 +547,50 @@
                 android:textColor="#FFFFFF"
                 android:textSize="32px"
                 android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16px">
+
+            <Button
+                android:id="@+id/buttonPxPay"
+                android:layout_width="0dp"
+                android:layout_height="154px"
+                android:layout_weight="1"
+                android:layout_marginLeft="5px"
+                android:layout_marginRight="5px"
+                android:background="@drawable/rounded_button_cash"
+                android:text="全支付"
+                android:textColor="#FFFFFF"
+                android:textSize="32px" />
+
+            <Button
+                android:id="@+id/buttonEasyPay"
+                android:layout_width="0dp"
+                android:layout_height="154px"
+                android:layout_weight="1"
+                android:layout_marginLeft="5px"
+                android:layout_marginRight="5px"
+                android:background="@drawable/rounded_button_cash"
+                android:text="悠遊付"
+                android:textColor="#FFFFFF"
+                android:textSize="32px" />
+
+            <Button
+                android:id="@+id/buttonJkoPay"
+                android:layout_width="0dp"
+                android:layout_height="154px"
+                android:layout_weight="1"
+                android:layout_marginLeft="5px"
+                android:layout_marginRight="5px"
+                android:background="@drawable/rounded_button_cash"
+                android:text="街口支付"
+                android:textColor="#FFFFFF"
+                android:textSize="32px" />
 
         </LinearLayout>
     </LinearLayout>

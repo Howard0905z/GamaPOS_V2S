@@ -5,4 +5,4 @@
 *.bin
 *.probe
 .app/
-
+.build/

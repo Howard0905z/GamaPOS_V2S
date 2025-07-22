@@ -4,15 +4,15 @@ plugins {
 }
 
 android {
-    namespace = "com.example.GamaPOS_V2S"
+    namespace = "com.example.EcoPOS_V2S"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.GamaPOS_V2S"
+        applicationId = "com.example.EcoPOS_V2S"
         minSdk = 25
         targetSdk = 34
-        versionCode = 5
-        versionName = "1.5"
+        versionCode = 10
+        versionName = "1.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -52,5 +52,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.9")
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(files("libs/MyPayCommon_v0.3.3_release.aar"))
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("com.caverock:androidsvg-aar:1.4")
 
 }
