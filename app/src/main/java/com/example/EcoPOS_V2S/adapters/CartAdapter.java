@@ -172,22 +172,39 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 return;
             }
 
-            rebateAmount = 0;
+            // 計算選中商品的總金額
+            double selectedTotalAmount = 0;
             for (CartItem item : cartItems) {
                 if (item.isSelected()) {
-                    double originalTotalPrice = item.getPrice() * item.getQuantity();
-                    double discountedPrice = Math.ceil(item.getPrice() - rebateAmountValue); // 计算折让价格
-                    item.setDiscountedPrice(discountedPrice);
-                    item.setTotalPrice(discountedPrice * item.getQuantity());
-                    rebateAmount += originalTotalPrice - item.getTotalPrice(); // 累加每个商品的折让金额
-
-                    // 更新原价为折扣价
-                    item.setPrice(discountedPrice);
-
-                    Log.d("CartAdapter", "Item: " + item.getName() + ", Original Price: " + item.getPrice() + ", Rebate Amount: " + rebateAmountValue + ", Quantity: " + item.getQuantity() + ", Rebate Applied: " + (originalTotalPrice - item.getTotalPrice()));
+                    selectedTotalAmount += item.getPrice() * item.getQuantity();
                 }
             }
-            Log.d("CartAdapter", "Rebate applied: " + rebateAmount);
+
+            // 檢查折讓金額是否超過選中商品的總金額
+            if (rebateAmountValue > selectedTotalAmount) {
+                Toast.makeText(context, "折讓金額不能超過選中商品的總金額: $" + String.format("%.2f", selectedTotalAmount), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // 計算折讓比例
+            double rebateRatio = rebateAmountValue / selectedTotalAmount;
+            rebateAmount = rebateAmountValue;
+
+            // 按比例對每個選中商品應用折讓
+            for (CartItem item : cartItems) {
+                if (item.isSelected()) {
+                    double originalItemTotal = item.getPrice() * item.getQuantity();
+                    double itemRebateAmount = originalItemTotal * rebateRatio;
+                    double newItemTotal = originalItemTotal - itemRebateAmount;
+                    double newPrice = newItemTotal / item.getQuantity();
+                    
+                    item.setPrice(newPrice);
+                    item.setTotalPrice(newItemTotal);
+
+                    Log.d("CartAdapter", "Item: " + item.getName() + ", Original Total: " + originalItemTotal + ", Item Rebate: " + itemRebateAmount + ", New Price: " + newPrice + ", Quantity: " + item.getQuantity());
+                }
+            }
+            Log.d("CartAdapter", "Total rebate applied: " + rebateAmount);
             notifyDataSetChanged();
         } catch (Exception e) {
             Log.e("CartAdapter", "Error in applyRebate: " + e.getMessage(), e);

@@ -3,7 +3,7 @@ package com.example.EcoPOS_V2S.config;
 public class EnvironmentConfig {
     
     // 🔧 環境切換 - 只需要修改這個值
-    private static final Environment CURRENT_ENVIRONMENT = Environment.DEVELOPMENT;
+    private static final Environment CURRENT_ENVIRONMENT = Environment.PRODUCTION;
     
     // 環境枚舉
     public enum Environment {
@@ -18,11 +18,11 @@ public class EnvironmentConfig {
     public static String getBaseUrl() {
         switch (CURRENT_ENVIRONMENT) {
             case DEVELOPMENT:
-                return "http://114.34.174.244:8100";
+                return "http://172.207.27.24:8100";
             case TESTING:
-                return "http://114.34.174.244:8100";
+                return "http://172.207.27.24:8100";
             case PRODUCTION:
-                return "http://114.34.174.244:8100";
+                return "http://172.207.27.24:8100";
             default:
                 return "http://172.207.27.24:8100";
         }
@@ -80,7 +80,7 @@ public class EnvironmentConfig {
             case TESTING:
                 return "tw.com.mypay.tap.dev"; // 測試環境套件名稱
             case PRODUCTION:
-                return "tw.com.mypay.tap.dev"; // 生產環境套件名稱
+                return "tw.com.mypay.tap"; // 生產環境套件名稱
             default:
                 return "tw.com.mypay.tap";
         }
@@ -96,7 +96,7 @@ public class EnvironmentConfig {
             case TESTING:
                 return "12345678"; // 測試統一編號
             case PRODUCTION:
-                return "12345678"; // 生產統一編號
+                return "00365362"; // 生產統一編號
             default:
                 return "00365362";
         }
@@ -110,7 +110,7 @@ public class EnvironmentConfig {
             case TESTING:
                 return "910022190001"; // 測試商務代號
             case PRODUCTION:
-                return "910022190001"; // 生產商務代號 (請修改為實際值)
+                return "003653620001"; // 生產商務代號 (請修改為實際值)
             default:
                 return "003653620001";
         }

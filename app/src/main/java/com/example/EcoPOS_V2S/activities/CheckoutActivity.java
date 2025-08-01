@@ -1772,24 +1772,29 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 }
 
                 // (B) 用 fetchedOrderNumber 做為發票的 OrderId
-                // 1. 計算購物車總額
+                // 1. 計算購物車原始總額（使用原始價格）
                 double cartTotal = 0.0;
                 for (Item item : itemList) {
-                    double price = 0.0;
+                    double originalPrice = 0.0;
                     int quantity = 0;
                     try {
-                        price = Double.parseDouble(item.getPrice());
+                        // 使用原始價格計算總額
+                        if (item.getOriginalPrice() != null && !item.getOriginalPrice().trim().isEmpty()) {
+                            originalPrice = Double.parseDouble(item.getOriginalPrice());
+                        } else {
+                            originalPrice = Double.parseDouble(item.getPrice());
+                        }
                         quantity = Integer.parseInt(item.getQuantity());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    cartTotal += price * quantity;
+                    cartTotal += originalPrice * quantity;
                 }
 
                 // 2. 折扣 & 抵用
                 double totalDiscount = discountAmount + rebateAmount;
                 double finalAmount = cartTotal - totalDiscount;
-                //int intFinalAmount = (int) Math.round(finalAmount);
+                int intFinalAmount = (int) Math.round(finalAmount);
 
                 // 3. 判斷是否含稅
                 double salesAmount;
@@ -1813,8 +1818,18 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 // 4. 組出 ProductItem
                 JSONArray productArray = new JSONArray();
 
-                int intFinalAmount = 0;
+                // 使用折讓後的總金額作為發票金額，而不是重新計算
+                // int intFinalAmount = 0; // 移除這行，改用上面計算好的 intFinalAmount
 
+                // 計算總的原始金額，用於檢查
+                int originalTotalAmount = 0;
+                int adjustedTotalAmount = 0;
+                
+                // 計算折讓比例：實際收款金額 / 原始總金額
+                double discountRatio = cartTotal > 0 ? finalAmount / cartTotal : 1.0;
+                
+                Log.d("InvoiceDebug", "計算折讓比例: finalAmount=" + finalAmount + ", cartTotal=" + cartTotal + ", ratio=" + String.format("%.4f", discountRatio));
+                
                 for (Item cartItem : itemList) {
                     JSONObject productObj = new JSONObject();
                     productObj.put("Description", cartItem.getName());
@@ -1822,29 +1837,51 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                     productObj.put("Remark", "");
                     productObj.put("TaxType", "3");  // 假設應稅
 
-                    double price = 0.0;
+                    // 使用原始價格計算發票商品明細
+                    double originalPrice = 0.0;
+                    double currentPrice = 0.0;
                     int quantity = 0;
                     try {
-                        price = Double.parseDouble(cartItem.getPrice());
+                        // 優先使用原始價格，如果沒有則使用當前價格
+                        if (cartItem.getOriginalPrice() != null && !cartItem.getOriginalPrice().trim().isEmpty()) {
+                            originalPrice = Double.parseDouble(cartItem.getOriginalPrice());
+                        } else {
+                            originalPrice = Double.parseDouble(cartItem.getPrice());
+                        }
+                        currentPrice = Double.parseDouble(cartItem.getPrice());
                         quantity = Integer.parseInt(cartItem.getQuantity());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    int intSubtotal = (int) Math.round(price * quantity);
-                    int intPrice = quantity > 0 ? (int) Math.round((double) intSubtotal / quantity) : 0;
+                    
+                    // 計算調整後的金額（按折讓比例）
+                    int intOriginalSubtotal = (int) Math.round(originalPrice * quantity);
+                    int intAdjustedSubtotal = (int) Math.round(originalPrice * quantity * discountRatio);
+                    int intAdjustedPrice = quantity > 0 ? (int) Math.round(intAdjustedSubtotal / (double) quantity) : 0;
 
-                    productObj.put("UnitPrice", intPrice);
-                    productObj.put("Amount", intSubtotal);
+                    productObj.put("UnitPrice", intAdjustedPrice);
+                    productObj.put("Amount", intAdjustedSubtotal);
                     productArray.put(productObj);
-                    intFinalAmount += intSubtotal;
+                    originalTotalAmount += intOriginalSubtotal;
+                    adjustedTotalAmount += intAdjustedSubtotal;
+                    
+                    Log.d("InvoiceDebug", "Item: " + cartItem.getName() + 
+                          ", Original Price: " + originalPrice + 
+                          ", Adjusted Price: " + intAdjustedPrice + 
+                          ", Quantity: " + quantity + 
+                          ", Original Amount: " + intOriginalSubtotal +
+                          ", Adjusted Amount: " + intAdjustedSubtotal);
                 }
-
-                int totalAmountCheck = 0;
-                for (int i = 0; i < productArray.length(); i++) {
-                    totalAmountCheck += productArray.getJSONObject(i).getInt("Amount");
-                }
-                Log.d("InvoiceDebug", "Sum of product Amounts = " + totalAmountCheck);
-                Log.d("InvoiceDebug", "FreeTaxSalesAmount = " + intFinalAmount);
+                
+                Log.d("InvoiceDebug", "=== 發票金額計算 ===");
+                Log.d("InvoiceDebug", "原始商品明細總額: " + originalTotalAmount);
+                Log.d("InvoiceDebug", "調整後商品明細總額 (ProductItem Amount 加總): " + adjustedTotalAmount);
+                Log.d("InvoiceDebug", "FreeTaxSalesAmount: " + intFinalAmount);
+                Log.d("InvoiceDebug", "TotalAmount: " + intFinalAmount);
+                Log.d("InvoiceDebug", "TaxAmount: " + intTaxAmount);
+                Log.d("InvoiceDebug", "折讓比例: " + String.format("%.4f", discountRatio));
+                Log.d("InvoiceDebug", "驗算 TotalAmount = FreeTaxSalesAmount + TaxAmount: " + intFinalAmount + " = " + intFinalAmount + " + " + intTaxAmount);
+                Log.d("InvoiceDebug", "商品明細總額與 FreeTaxSalesAmount 差異: " + (adjustedTotalAmount - intFinalAmount));
 
                 // 5. 組發票 JSON
                 JSONObject invoiceJson = new JSONObject();
@@ -1855,12 +1892,12 @@ public class CheckoutActivity extends AppCompatActivity implements ActivityCompa
                 invoiceJson.put("ProductItem", productArray);
 
                 invoiceJson.put("SalesAmount", 0);
-                invoiceJson.put("FreeTaxSalesAmount", intFinalAmount);
+                invoiceJson.put("FreeTaxSalesAmount", intFinalAmount);  // 使用折讓後的實際金額，與 TotalAmount 一致
                 invoiceJson.put("ZeroTaxSalesAmount", 0);
                 invoiceJson.put("TaxType", "3");
                 invoiceJson.put("TaxRate", "0");
                 invoiceJson.put("TaxAmount", intTaxAmount);
-                invoiceJson.put("TotalAmount", intFinalAmount);
+                invoiceJson.put("TotalAmount", intFinalAmount);  // TotalAmount = FreeTaxSalesAmount + TaxAmount
 
                 // 載具
                 if (carrierCode != null && !carrierCode.isEmpty()) {
